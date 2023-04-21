@@ -50,6 +50,13 @@ public class Lexer {
             tokens.add(token);
             return true;
         }
+
+        if(lexeme.equals("DataType")){
+            token = new Token(lexeme, Symbols.DATATYPE, i, ++j);
+            tokens.add(token);
+            return true;
+        }
+
         return false;
     }
 
@@ -99,6 +106,10 @@ public class Lexer {
                 token = new Token("}", Symbols.RIGHT_CURLY, i, ++j);
                 tokens.add(token);
                 return true;
+            case ',':
+                token = new Token(",", Symbols.COMMA, i, ++j);
+                tokens.add(token);
+                return true;
             case '!':
                 if(input.charAt(currChar+1) == '='){
                     token = new Token("!=", Symbols.NOT_EQUALS, i, ++j);
@@ -106,12 +117,15 @@ public class Lexer {
                     currChar++;
                     return true;
                 }
+                break;
             case '=':
                 if(input.charAt(currChar+1) == '='){
                     token = new Token("==", Symbols.EQUALS, i, ++j);
                     tokens.add(token);
                     currChar++;
-                    return true;
+                }else{
+                    token = new Token("=", Symbols.ASSIGN, i, ++j);
+                    tokens.add(token);
                 }
                 return true;
             case '<':
@@ -139,15 +153,17 @@ public class Lexer {
                     token = new Token("&&", Symbols.AND_OP, i, ++j);
                     tokens.add(token);
                     currChar++;
+                    return true;
                 }
-                return true;
+                break;
             case '|':
                 if(input.charAt(currChar+1) == '|'){
                     token = new Token("||", Symbols.OR_OP, i, ++j);
                     tokens.add(token);
                     currChar++;
+                    return true;
                 }
-                return true;
+                break;
             case ';':
                 token = new Token(";", Symbols.SEMICOLON, i, ++j);
                 tokens.add(token);

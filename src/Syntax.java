@@ -25,11 +25,13 @@ public class Syntax {
             ifStmt();
         }else if(nextToken == Symbols.LEFT_CURLY){
             block();
-        }else if(nextToken == Symbols.IDENT || nextToken == Symbols.INT_LIT || nextToken == Symbols.FLOAT_LIT || nextToken == Symbols.LEFT_PAREN){
-            expr();
+        }else if(nextToken == Symbols.IDENT){
+            assign();
+        }else if(nextToken == Symbols.DATATYPE){
+            declare();
         }else{
             System.out.println("Unexpected symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-            System.exit(0);
+            System.exit(1);
         }
     }
 
@@ -45,7 +47,7 @@ public class Syntax {
                 }
                 if(nextToken != Symbols.SEMICOLON){
                     System.out.println("Expected a \";\" in statement list!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                    System.exit(0);
+                    System.exit(1);
                 }else{
                     getNextToken();
                 }
@@ -56,18 +58,18 @@ public class Syntax {
     void whileLoop(){
         if(nextToken != Symbols.WHILE_CODE){
             System.out.println("Expected \"while\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-            System.exit(0);
+            System.exit(1);
         }else{
             getNextToken();
             if(nextToken != Symbols.LEFT_PAREN){
                 System.out.println("Expected \"(\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                System.exit(0);
+                System.exit(1);
             }else{
                 getNextToken();
                 boolExpr();
                 if(nextToken !=Symbols.RIGHT_PAREN){
                     System.out.println("Expected \")\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                    System.exit(0);
+                    System.exit(1);
                 }
 
                 getNextToken();
@@ -78,7 +80,7 @@ public class Syntax {
                     stmt();
                     if(nextToken != Symbols.SEMICOLON){
                         System.out.println("Expected \";\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                        System.exit(0);
+                        System.exit(1);
                     }
                 }
             }
@@ -88,18 +90,18 @@ public class Syntax {
     void ifStmt(){
         if(nextToken != Symbols.IF_CODE){
             System.out.println("Expected \"if\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-            System.exit(0);
+            System.exit(1);
         }else{
             getNextToken();
             if(nextToken != Symbols.LEFT_PAREN){
                 System.out.println("Expected \"(\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                System.exit(0);
+                System.exit(1);
             }else{
                 getNextToken();
                 boolExpr();
                 if(nextToken !=Symbols.RIGHT_PAREN){
                     System.out.println("Expected \")\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                    System.exit(0);
+                    System.exit(1);
                 }else{
                     getNextToken();
                     if(nextToken == Symbols.LEFT_CURLY){
@@ -108,7 +110,7 @@ public class Syntax {
                         stmt();
                         if(nextToken != Symbols.SEMICOLON){
                             System.out.println("Expected a \";\" in statement list!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                            System.exit(0);
+                            System.exit(1);
                         }else{
                             getNextToken();
                         }
@@ -121,7 +123,7 @@ public class Syntax {
                             stmt();
                             if(nextToken != Symbols.SEMICOLON){
                                 System.out.println("Expected a \";\" in statement list!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                                System.exit(0);
+                                System.exit(1);
                             }else{
                                 getNextToken();
                             }
@@ -134,14 +136,54 @@ public class Syntax {
 
     void block(){
         if(nextToken != Symbols.LEFT_CURLY){
-            System.out.println("Expected \"{\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-            System.exit(0);
+            System.out.println("Expected \"{\"\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+            System.exit(1);
         }else{
             getNextToken();
             stmtList();
             if(nextToken != Symbols.RIGHT_CURLY){
-                System.out.println("Expected \"}\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                System.exit(0);
+                System.out.println("Expected \"}\"\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+                System.exit(1);
+            }
+        }
+    }
+
+    void assign(){
+        if(nextToken != Symbols.IDENT){
+            System.out.println("Expected an identifier\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+            System.exit(1);
+        }else{
+            getNextToken();
+            if(nextToken != Symbols.ASSIGN){
+                System.out.println("Expected \"=\"\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+                System.exit(1);
+            }else{
+                getNextToken();
+                expr();
+            }
+        }
+    }
+    
+    void declare(){
+        if(nextToken != Symbols.DATATYPE){
+            System.out.println("Expected a data type\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+            System.exit(1);
+        }else{
+            getNextToken();
+            if(nextToken != Symbols.IDENT){
+                System.out.println("Expected an identifier\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+                System.exit(1);
+            }else{
+                getNextToken();
+                while(nextToken == Symbols.COMMA){
+                    getNextToken();
+                    if(nextToken != Symbols.IDENT){
+                        System.out.println("Expected an identifier\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
+                        System.exit(1);
+                    }else{
+                        getNextToken();
+                    }
+                }
             }
         }
     }
@@ -174,11 +216,11 @@ public class Syntax {
                 getNextToken();
             }else{
                 System.out.println("Expected \")\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                System.exit(0);
+                System.exit(1);
             }
         }else{
             System.out.println("Unexpected symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-            System.exit(0);
+            System.exit(1);
         }
     }
 
@@ -208,7 +250,7 @@ public class Syntax {
 
     void bOr(){
         expr();
-        while(nextToken == Symbols.AND_OP){
+        while(nextToken == Symbols.OR_OP){
             getNextToken();
             expr();
         }
@@ -219,7 +261,7 @@ public class Syntax {
             nextToken = tokens.get(++i).sCode;
         }else{
             System.out.println("Error: Cannot Reach EOF!");
-            System.exit(0);
+            System.exit(1);
         }
     }
 }

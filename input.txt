@@ -1,1 +1,11 @@
-if(1){{};hi;while(0){say; 0;};}
+while(i<3&&j>=0&&i){
+if(1){
+{
+};
+hi = 2;
+while(0){
+say = 3.4;
+zero = 0;
+};
+};
+}

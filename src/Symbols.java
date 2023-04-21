@@ -23,5 +23,8 @@ public enum Symbols {
     IDENT,
     INT_LIT,
     FLOAT_LIT,
+    DATATYPE,
+    ASSIGN,
+    COMMA,
     EOF,
 }
