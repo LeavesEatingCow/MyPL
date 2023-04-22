@@ -37,7 +37,7 @@ public class Syntax {
 
     void stmtList(){
         if(nextToken != Symbols.RIGHT_CURLY) {
-            while(nextToken == Symbols.IF_CODE || nextToken == Symbols.LEFT_CURLY || nextToken == Symbols.IDENT || nextToken == Symbols.INT_LIT || nextToken == Symbols.FLOAT_LIT || nextToken == Symbols.LEFT_PAREN || nextToken == Symbols.WHILE_CODE) {
+            while(nextToken == Symbols.IF_CODE || nextToken == Symbols.LEFT_CURLY || nextToken == Symbols.IDENT || nextToken == Symbols.DATATYPE || nextToken == Symbols.WHILE_CODE) {
                 stmt();
                 if(nextToken  == Symbols.RIGHT_CURLY){
                     getNextToken();
@@ -73,16 +73,7 @@ public class Syntax {
                 }
 
                 getNextToken();
-
-                if(nextToken == Symbols.LEFT_CURLY){
-                    block();
-                }else{
-                    stmt();
-                    if(nextToken != Symbols.SEMICOLON){
-                        System.out.println("Expected \";\" in loop!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                        System.exit(1);
-                    }
-                }
+                block();
             }
         }
     }
@@ -104,30 +95,12 @@ public class Syntax {
                     System.exit(1);
                 }else{
                     getNextToken();
-                    if(nextToken == Symbols.LEFT_CURLY){
-                        block();
-                    }else {
-                        stmt();
-                        if(nextToken != Symbols.SEMICOLON){
-                            System.out.println("Expected a \";\" in statement list!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                            System.exit(1);
-                        }else{
-                            getNextToken();
-                        }
-                    }
+                    block();
+                    getNextToken();
+
                     if (nextToken == Symbols.ELSE_CODE) {
                         getNextToken();
-                        if(nextToken == Symbols.LEFT_CURLY){
-                            block();
-                        }else {
-                            stmt();
-                            if(nextToken != Symbols.SEMICOLON){
-                                System.out.println("Expected a \";\" in statement list!\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
-                                System.exit(1);
-                            }else{
-                                getNextToken();
-                            }
-                        }
+                        block();
                     }
                 }
             }

@@ -1,11 +1,21 @@
-while(i<3&&j>=0&&i){
-if(1){
-{
-};
-hi = 2;
-while(0){
-say = 3.4;
-zero = 0;
-};
-};
+while(1){
+if(nextToken != token){
+        DataType hi, hello, name, free;
+        hi = 2;
+        hello = 2.4;
+        }else{
+            if(nextToken != token){
+                name = hello + hi;
+            }else{
+                free = name + 1;
+                if(nextToken != token || name >= 5){
+                    name = 0;
+                }else{
+                    name = 5;
+                    if (nextToken == token) {
+                        name = name + free;
+                    };
+                };
+            };
+        };
 }
