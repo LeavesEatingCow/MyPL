@@ -1,0 +1,249 @@
+4.
+
+STMT -> { IF_STMT | BLOCK | ASSIGN | DECLARE | WHILE_LOOP }
+STMT_LIST -> { STMT ; }
+WHILE_LOOP -> while ( BOOL_EXPR ) BLOCK
+IF_STMT -> if ( BOOL_EXPR ) BLOCK
+IF_STMT -> if ( BOOL_EXPR ) BLOCK else BLOCK
+BLOCK -> { STMT_LIST }
+DECLARE -> DATATYPE ID {, ID}
+DATATYPE -> String | float | char | int | boolean
+ASSIGN -> ID = EXPR
+EXPR -> TERM {+ TERM}
+EXPR -> TERM {- TERM}
+EXPR -> TERM
+TERM -> FACT {* FACT}
+TERM -> FACT {/ FACT}
+TERM -> FACT {% FACT}
+TERM -> FACT
+FACT -> POW {^ POW}
+FACT -> POW
+POW -> ID
+POW -> INT_LIT
+POW -> FLOAT_LIT
+POW -> ( EXPR )
+BOOL_EXPR -> BTERM {> BTERM}
+BOOL_EXPR -> BTERM {< BTERM}
+BOOL_EXPR -> BTERM {>= BTERM}
+BOOL_EXPR -> BTERM {<= BTERM}
+BOOL_EXPR -> BTERM
+BTERM -> BAND {== BAND}
+BTERM -> BAND {!= BAND}
+BTERM -> BAND
+BAND -> BOR {&& BOR}
+BAND -> BOR
+BOR -> EXPR {|| EXPR}
+BOR -> EXPR
+
+5.
+
+IfThenStatement:
+If(Expression) Statement
+
+If M_expr(Expression, s) == Error
+    return Error
+If M_expr(Expression, s) == False
+    return Statement
+else if M_expr(Expression, s) == True
+    if M_stmt(Statement, s) == Error
+        return Error
+    return s = M_stmt(Statement, s)
+
+IfThenElseStatement:
+    if(Expression) StatementNoShortif else Statement
+
+    if M_expr(Expression, s) == Error
+        return Error
+    if M_expr(Expression, s) == False 
+        if M_stmt(Statement, s) == Error   
+            return Error
+        return s = M_stmt(Statement, s)
+    if M_expr(Expression, s) == True
+        if M_stmt(StatementNoShortif, s) = Error
+            return Error
+        return s = M_stmt(StatementNoShortif, s)
+
+6.
+
+WhileStatement:
+
+while ( Expreession ) Statement
+
+M_while( while ( Expreession ) Statement) ==>
+
+if M_expr(Expression, s) == Error
+    return Error  
+if M_expr(Expression, s) == False
+    return s
+else if M_expr(Expreession, s) == True
+    if M_stmt(Statement, s) == Error
+        return Error
+    return M_while(while ( Expression ) Statement, M_stmt(Statement, s))
+
+
+7.
+
+Expression:
+
+M_expr(E + T, s) ==>    if M_expr(E, s) == Error
+                            return Error
+                        if M_term(T, s) == Error
+                            return Error
+                        else return E + T
+
+M_expr(E - T, s) ==>    if M_expr(E, s) == Error
+                            return Error
+                        if M_term(T, s) == Error
+                            return Error
+                        else return E - T
+
+M_expr(T, s) ==>    if M_term(T, s) == Error
+                            return Error
+                    else return T
+
+8.
+
+Expression:
+
+M_expr(E + T, s) ==>    if M_expr(E, s) == Error
+                            return Error
+                        if M_term(T, s) == Error
+                            return Error
+                        else 
+                            if(E + T == 0)
+                                return False
+                            else
+                                return True
+
+M_expr(E - T, s) ==>    if M_expr(E, s) == Error
+                            return Error
+                        if M_term(T, s) == Error
+                            return Error
+                        else 
+                            if(E - T == 0)
+                                return False
+                            else
+                                return True
+
+M_expr(T, s) ==>    if M_term(T, s) == Error
+                            return Error
+                    else if (T == 0)
+                        return False
+                    else
+                        return True
+
+
+9. 
+        <assign> -> ID = <expr> ;
+            <expr>[1].expected <- lookup(ID).actual_type
+
+            if(<expr>[1].actual_type == boolean && lookup(ID).actual_type == int)
+                return int
+            else if(<expr>[1].actual_type == int && lookup(ID).actual_type == boolean)
+                return boolean
+            else if(<expr>[1].actual_type == char && lookup(ID).actual_type == int)
+                return int
+            else if(<expr>[1].actual_type == char && lookup(ID).actual_type == int)
+                return char
+        
+
+    
+        <expr> -> <term>[1] + <term>[2]
+            if(<term>[1].actual_type == int && <term>[2].actual_type == int)
+                return int
+            else if(<term>[1].actual_type == String && <term>[2].actual_type == String)
+                return str-concat(<term>[1], <term>[2])
+            else
+                return float
+        PREDICATE: <expr>[1].actual_type == <expr>[1].expected_type
+
+        <expr> -> <term>[1] - <term>[2]
+            if(<term>[1].actual_type == int && <term>[2].actual_type == int)
+                return int
+            else
+                return float
+        PREDICATE: <expr>[1].actual_type == <expr>[1].expected_type
+
+        <expr> -> <term>
+            <expr>[1].actual_type <- <term>.actual_type
+
+        <term> -> <fact>[1] * <fact>[2]
+            if(<fact>[1].actual_type == int && <fact>[2].actual_type == int)
+                return int
+            else if(<fact>[1].actual_type == String && <fact>[2].actual_type == int)
+                String s = <fact>[1]
+                for(int i = 0; i < <fact>[2]; i++){
+                    s = str-concat(s, <fact>[1])
+                }
+                return s
+            else
+                return float
+        
+        <term> -> <fact>[1] / <fact>[2]
+            if(<fact>[1].actual_type == int && <fact>[2].actual_type == int)
+                return int
+            else 
+                return float
+        PREDICATE: <fact>[2] != 0
+
+        <term> -> <fact>[1] % <fact>[2]
+            if(<fact>[1].actual_type == int && <fact>[2].actual_type == int)
+                return int
+            else 
+                return float
+        PREDICATE: <fact>[2] != 0
+
+        <term> -> <fact>
+            <term>[1].actual_type <- <fact>.actual_type
+
+        <fact> -> <pow>[1] ^ <pow>[2]
+            if(<fact>[1].actual_type == float || <fact>[2].actual_type == float)
+                return float
+            else
+                return int
+
+        <fact> -> <pow>
+            <fact>[1].actual_type <- <pow>.actual_type
+
+        <pow>--> ( <expr> )
+            <pow>.actual_type <- <expr>.actual_type
+
+        <pow>--> id
+            <pow>.actual_type <- lookup(id).actual_type
+
+        <pow>--> float_lit
+            <pow>.actual_type <- FLOAT
+
+        <pow>--> int_lit
+            <pow>.actual_type <- INT
+
+
+11.
+
+{2 * (b - 1) - 1 > 0}
+{2 * (b - 1) > 1}
+{b - 1 > 1/2}
+
+{b > 3/2}  // 2 if integer
+a = 2 * (b - 1) - 1 
+{a > 0}
+
+{x < -1 && x < y} || {x >= y && x < 0}
+if(x < y)
+    x = x + 1
+else
+    x = 3 * x
+{x < 0}
+
+{y < 2a(b-1) - 1} && ({y < -1 && x < y} || {y <= x && x < 0})
+y = a *2 * (b-1) - 1
+if (x < y)
+    x = y + 1
+else
+    x = 3 * x
+{x < 0}
+
+{a > 3} && {b > -1}
+a = 3 * (2 * b + a)
+b = 2 * a - 1
+{b > 5}
