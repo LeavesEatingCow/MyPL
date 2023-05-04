@@ -1,13 +1,17 @@
-while(1){
+while(nextToken != EOF){
 if(nextToken != token){
-        DataType hi, hello, name, free;
+        String hi, hello, name, free; // Strings
+        String newWord;
+        char c; // Characters
+        newWord = "Hello World!";
+        c = '\t'; //Escape Character
         hi = 2;
-        hello = 2.4;
+        hello = 2.4E-10L; //Float Number
         }else{
             if(nextToken != token){
                 name = hello + hi;
             }else{
-                free = name + 1;
+                free = name ^ 1;
                 if(nextToken != token || name >= 5){
                     name = 0;
                 }else{
@@ -19,3 +23,20 @@ if(nextToken != token){
             };
         };
 }
+
+/* Second Statement */
+
+while(0){}
+
+if(1){
+    float f;
+    f = 2.4e-3;
+}else{
+    int x;
+    x = 3;
+}
+
+/*
+Name: Daniel Maliro
+PLC Test
+*/

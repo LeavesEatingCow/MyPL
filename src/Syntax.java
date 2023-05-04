@@ -10,7 +10,10 @@ public class Syntax {
     }
 
     void startAnalysis(){
-        stmt();
+        while(nextToken != Symbols.EOF) {
+            stmt();
+            getNextToken();
+        }
         if(i != tokens.size() - 1) {
             System.out.println("Unexpected symbol: " + tokens.get(i + 1).lexeme + "\nPosition: [" + tokens.get(i + 1).row + ":" + tokens.get(i + 1).column + "]");
         }else{
@@ -27,7 +30,7 @@ public class Syntax {
             block();
         }else if(nextToken == Symbols.IDENT){
             assign();
-        }else if(nextToken == Symbols.DATATYPE){
+        }else if(nextToken == Symbols.STRING_TYPE || nextToken == Symbols.CHAR_TYPE || nextToken == Symbols.FLOAT_TYPE || nextToken == Symbols.INT_TYPE || nextToken == Symbols.BOOL_TYPE){
             declare();
         }else{
             System.out.println("Unexpected symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
@@ -37,7 +40,7 @@ public class Syntax {
 
     void stmtList(){
         if(nextToken != Symbols.RIGHT_CURLY) {
-            while(nextToken == Symbols.IF_CODE || nextToken == Symbols.LEFT_CURLY || nextToken == Symbols.IDENT || nextToken == Symbols.DATATYPE || nextToken == Symbols.WHILE_CODE) {
+            while(nextToken == Symbols.IF_CODE || nextToken == Symbols.LEFT_CURLY || nextToken == Symbols.IDENT || nextToken == Symbols.STRING_TYPE || nextToken == Symbols.CHAR_TYPE || nextToken == Symbols.FLOAT_TYPE || nextToken == Symbols.INT_TYPE || nextToken == Symbols.BOOL_TYPE || nextToken == Symbols.WHILE_CODE) {
                 stmt();
                 if(nextToken  == Symbols.RIGHT_CURLY){
                     getNextToken();
@@ -132,13 +135,13 @@ public class Syntax {
                 System.exit(1);
             }else{
                 getNextToken();
-                expr();
+                boolExpr();
             }
         }
     }
     
     void declare(){
-        if(nextToken != Symbols.DATATYPE){
+        if(nextToken != Symbols.STRING_TYPE && nextToken != Symbols.CHAR_TYPE && nextToken != Symbols.FLOAT_TYPE && nextToken != Symbols.INT_TYPE && nextToken != Symbols.BOOL_TYPE){
             System.out.println("Expected a data type\nInstead received symbol: " + tokens.get(i).lexeme + "\nPosition: [" + tokens.get(i).row + ":" + tokens.get(i).column + "]");
             System.exit(1);
         }else{
@@ -178,7 +181,15 @@ public class Syntax {
     }
 
     void fact(){
-        if(nextToken == Symbols.IDENT || nextToken == Symbols.INT_LIT || nextToken == Symbols.FLOAT_LIT){
+        pow();
+        while(nextToken == Symbols.EXP_OP){
+            getNextToken();
+            pow();
+        }
+    }
+
+    void pow(){
+        if(nextToken == Symbols.IDENT || nextToken == Symbols.INT_LIT || nextToken == Symbols.FLOAT_LIT || nextToken == Symbols.STRING_LIT || nextToken == Symbols.CHAR_LIT || nextToken == Symbols.TRUE || nextToken == Symbols.FALSE){
             if(i < tokens.size()-1) {
                 getNextToken();
             }

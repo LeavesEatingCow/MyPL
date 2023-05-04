@@ -3,3 +3,5 @@ enum Identifiers{
     a,
     t,
 }
+
+// Identifier and reserved words automata states

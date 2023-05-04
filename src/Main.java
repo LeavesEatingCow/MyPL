@@ -1,7 +1,9 @@
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Main {
@@ -13,6 +15,13 @@ public class Main {
         Lexer lex = new Lexer(content, tokens);
         lex.startAnalysis();
 
+        /*
+        System.out.print("[");
+        for(Token t:tokens){
+            System.out.print(t.lexeme + ", ");
+        }
+        System.out.println("]");
+        */
         Syntax syntax = new Syntax(lex.tokens);
         syntax.startAnalysis();
     }
